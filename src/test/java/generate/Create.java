@@ -20,7 +20,7 @@ public class Create {
     String tableName="classes";
     SdDatabaseOptions databaseOptions = new SdDatabaseOptions(MySQL.MYSQL_8_DERVER, "jdbc:mysql://localhost:3306/local?useUnicode=true&useSSL=false&serverTimezone=UTC");
     databaseOptions.setUser("root");
-    databaseOptions.setPassword("miniduhua");
+    databaseOptions.setPassword("root");
     String packageName = "github.mirrentools.app.";
     String templatePath = "vertx";
     // 初始化执行工具
