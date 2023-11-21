@@ -1,3 +1,7 @@
+.idea/
+.vertx/
+file-uploads/
+logs/
 target/
 pom.xml.tag
 pom.xml.releaseBackup
