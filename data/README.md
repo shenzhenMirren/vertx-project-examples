@@ -2,7 +2,7 @@
 
 ## instance
 
-ServerVerticle的实例数量,通常要参考CPU是多少核心,比如机器虚拟8核就设置实例为7
+ServerVerticle的实例数量,通常要参考CPU是多少核心,建议是CPU的2倍减1,比如机器虚拟8核就设置实例为7
 
 ## httpPort
 

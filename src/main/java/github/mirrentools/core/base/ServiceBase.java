@@ -1,6 +1,10 @@
 package github.mirrentools.core.base;
 
+import github.mirrentools.core.AppContext;
+import github.mirrentools.core.ValidationResult;
 import github.mirrentools.core.enums.ResultDataType;
+import github.mirrentools.core.enums.ResultState;
+import github.mirrentools.core.sql.SqlAndParams;
 import github.mirrentools.core.utils.ResultUtil;
 import github.mirrentools.core.utils.ValidationResultUtil;
 import io.vertx.core.AsyncResult;
@@ -9,10 +13,6 @@ import io.vertx.core.Promise;
 import io.vertx.core.impl.logging.Logger;
 import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.core.json.JsonObject;
-import github.mirrentools.core.AppContext;
-import github.mirrentools.core.ValidationResult;
-import github.mirrentools.core.enums.ResultState;
-import github.mirrentools.core.sql.SqlAndParams;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -161,7 +161,7 @@ public class ServiceBase extends JdbcBase implements DataValidatorHelper {
    * 查询数量
    *
    * @param log   日志的标题
-   * @param dbId  数据源的id
+   * @param dbId  指定数据源的id
    * @param query SQL与参数
    * @return 获取数据并格式化为响应类型结果, 成功状态=SUCCESS,失败状态=ERROR
    */
@@ -185,7 +185,7 @@ public class ServiceBase extends JdbcBase implements DataValidatorHelper {
    * 查询数量
    *
    * @param log   日志的标题
-   * @param dbId  数据源的id
+   * @param dbId  指定数据源的id
    * @param query SQL与参数
    * @param state 响应状态码
    * @return 获取数据并格式化为响应类型结果, 成功状态=SUCCESS,失败状态=state
@@ -234,7 +234,7 @@ public class ServiceBase extends JdbcBase implements DataValidatorHelper {
    * 执行查询得到对象结果,如果结果为null则返回{},失败就返回state状态码
    *
    * @param log   日志的标题
-   * @param dbId  数据源id
+   * @param dbId  指定数据源的id
    * @param query SQL与参数
    * @param state 响应状态码
    * @return 获取数据并格式化为响应类型结果, 成功状态=SUCCESS,失败状态=state
@@ -261,7 +261,7 @@ public class ServiceBase extends JdbcBase implements DataValidatorHelper {
    * 执行查询得到List结果,如果结果为null则返回[],失败就返回Error状态码
    *
    * @param log   日志的标题
-   * @param dbId  数据源的id
+   * @param dbId  指定数据源的id
    * @param query SQL与参数
    * @return 获取数据并格式化为响应类型结果, 成功状态=SUCCESS,失败状态=ERROR
    */
@@ -285,7 +285,7 @@ public class ServiceBase extends JdbcBase implements DataValidatorHelper {
    * 执行查询得到List结果,如果结果为null则返回[],失败就返回Error状态码
    *
    * @param log   日志的标题
-   * @param dbId  数据源的id
+   * @param dbId  指定数据源的id
    * @param query SQL与参数
    * @param state 响应状态码
    * @return 获取数据并格式化为响应类型结果, 成功状态=SUCCESS,失败状态=state
@@ -335,7 +335,7 @@ public class ServiceBase extends JdbcBase implements DataValidatorHelper {
    * 执行查询得到对象结果,如果结果为null则返回0,失败就返回Error状态码
    *
    * @param log   日志的标题
-   * @param dbId  数据源的id
+   * @param dbId  指定数据源的id
    * @param query SQL与参数
    * @param state 响应状态码
    * @return 获取数据并格式化为响应类型结果, 成功状态=SUCCESS,失败状态=state
@@ -374,7 +374,7 @@ public class ServiceBase extends JdbcBase implements DataValidatorHelper {
    * 执行操作结果返回0或1,成功返回状态码ERROR
    *
    * @param log   日志的标题
-   * @param dbId  数据源的id
+   * @param dbId  指定数据源的id
    * @param query SQL与参数
    * @return 获取数据并格式化为响应类型结果, 成功状态=SUCCESS,失败状态=ERROR
    */
@@ -386,14 +386,14 @@ public class ServiceBase extends JdbcBase implements DataValidatorHelper {
    * 执行操作结果返回0或1,返回指定状态码
    *
    * @param log   日志的标题
-   * @param dbId  数据源的id
+   * @param dbId  指定数据源的id
    * @param query SQL与参数
    * @param state 响应状态码
    * @return 获取数据并格式化为响应类型结果, 成功状态=SUCCESS,失败状态=state
    */
   public Future<JsonObject> responseZeroOrOne(String log, String dbId, SqlAndParams query, ResultState state) {
     Promise<JsonObject> promise = Promise.promise();
-    updateInt(dbId, query, res -> resultIntZeroOrOne(log, res, promise, state));
+    updateInt(dbId, query, res -> resultZeroOrOne(log, res, promise, state));
     return promise.future();
   }
 
@@ -440,6 +440,53 @@ public class ServiceBase extends JdbcBase implements DataValidatorHelper {
   }
 
   /**
+   * 打印日志并得到返回结果int类型,如果为null则返回0,大于1返回1,状态码成功=Success,失败=Error
+   *
+   * @param log     日志名称的标题(那个操作)
+   * @param res     查询结果
+   * @param promise 操作结果
+   */
+  public void resultZeroOrOne(String log, AsyncResult<Integer> res, Promise<JsonObject> promise) {
+    if (res.succeeded()) {
+      int result = res.result() == null ? 0 : res.result();
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("执行[" + log + "]-->结果:" + result);
+      }
+      if (result > 1) {
+        result = 1;
+      }
+      promise.complete(ResultUtil.getSuccess(result));
+    } else {
+      LOG.error("执行[" + log + "]-->失败:", res.cause());
+      promise.complete(ResultUtil.getErrorZero());
+    }
+  }
+
+  /**
+   * 打印日志并得到返回结果int类型,如果为null则返回0,大于1返回1,状态码成功=Success,失败=state状态类
+   *
+   * @param log     日志名称的标题(那个操作)
+   * @param res     查询结果
+   * @param promise 操作结果
+   * @param state   失败返回的状态
+   */
+  public void resultZeroOrOne(String log, AsyncResult<Integer> res, Promise<JsonObject> promise, ResultState state) {
+    if (res.succeeded()) {
+      int result = res.result() == null ? 0 : res.result();
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("执行[" + log + "]-->结果:" + result);
+      }
+      if (result > 1) {
+        result = 1;
+      }
+      promise.complete(ResultUtil.getSuccess(result));
+    } else {
+      LOG.error("执行[" + log + "]-->失败:", res.cause());
+      promise.complete(ResultUtil.getZero(state));
+    }
+  }
+
+  /**
    * 打印日志并得到返回结果long类型,如果为null则返回0,状态码成功=Success,失败=Error
    *
    * @param log     日志名称的标题(那个操作)
@@ -472,53 +519,6 @@ public class ServiceBase extends JdbcBase implements DataValidatorHelper {
       long result = res.result() == null ? 0L : res.result();
       if (LOG.isDebugEnabled()) {
         LOG.debug("执行[" + log + "]-->结果:" + result);
-      }
-      promise.complete(ResultUtil.getSuccess(result));
-    } else {
-      LOG.error("执行[" + log + "]-->失败:", res.cause());
-      promise.complete(ResultUtil.getZero(state));
-    }
-  }
-
-  /**
-   * 打印日志并得到返回结果int类型,如果为null则返回0,大于1返回1,状态码成功=Success,失败=Error
-   *
-   * @param log     日志名称的标题(那个操作)
-   * @param res     查询结果
-   * @param promise 操作结果
-   */
-  public void resultIntZeroOrOne(String log, AsyncResult<Integer> res, Promise<JsonObject> promise) {
-    if (res.succeeded()) {
-      int result = res.result() == null ? 0 : res.result();
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("执行[" + log + "]-->结果:" + result);
-      }
-      if (result > 1) {
-        result = 1;
-      }
-      promise.complete(ResultUtil.getSuccess(result));
-    } else {
-      LOG.error("执行[" + log + "]-->失败:", res.cause());
-      promise.complete(ResultUtil.getErrorZero());
-    }
-  }
-
-  /**
-   * 打印日志并得到返回结果int类型,如果为null则返回0,大于1返回1,状态码成功=Success,失败=state状态类
-   *
-   * @param log     日志名称的标题(那个操作)
-   * @param res     查询结果
-   * @param promise 操作结果
-   * @param state   失败返回的状态
-   */
-  public void resultIntZeroOrOne(String log, AsyncResult<Integer> res, Promise<JsonObject> promise, ResultState state) {
-    if (res.succeeded()) {
-      int result = res.result() == null ? 0 : res.result();
-      if (LOG.isDebugEnabled()) {
-        LOG.debug("执行[" + log + "]-->结果:" + result);
-      }
-      if (result > 1) {
-        result = 1;
       }
       promise.complete(ResultUtil.getSuccess(result));
     } else {

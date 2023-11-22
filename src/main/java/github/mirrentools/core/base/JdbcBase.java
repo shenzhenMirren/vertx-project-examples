@@ -1,13 +1,13 @@
 package github.mirrentools.core.base;
 
+import github.mirrentools.core.AppContext;
 import github.mirrentools.core.sql.SQLExecute;
+import github.mirrentools.core.sql.SqlAndParams;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
 import io.vertx.core.json.JsonObject;
-import github.mirrentools.core.AppContext;
-import github.mirrentools.core.sql.SqlAndParams;
 
 import java.util.List;
 import java.util.Map;
@@ -84,7 +84,7 @@ public class JdbcBase {
   /**
    * 查询数量
    *
-   * @param dbId  SQL与参数
+   * @param dbId  指定数据源的id
    * @param query SQL与参数
    */
   public Future<Long> getLong(String dbId, SqlAndParams query) {
@@ -96,7 +96,7 @@ public class JdbcBase {
   /**
    * 查询数量
    *
-   * @param dbId    SQL与参数
+   * @param dbId    指定数据源的id
    * @param query   SQL与参数
    * @param handler 操作结果
    */
@@ -107,53 +107,6 @@ public class JdbcBase {
       return;
     }
     pool.selectAsLong(query, handler);
-  }
-
-  /**
-   * 查询List结果
-   *
-   * @param query SQL与参数
-   */
-  public Future<List<JsonObject>> getList(SqlAndParams query) {
-    return getList(null, query);
-  }
-
-  /**
-   * 查询List结果
-   *
-   * @param query   SQL与参数
-   * @param handler 响应结果
-   */
-  public void getList(SqlAndParams query, Handler<AsyncResult<List<JsonObject>>> handler) {
-    getList(null, query, handler);
-  }
-
-  /**
-   * 查询List结果
-   *
-   * @param dbId  数据源id
-   * @param query SQL与参数
-   */
-  public Future<List<JsonObject>> getList(String dbId, SqlAndParams query) {
-    Promise<List<JsonObject>> promise = Promise.promise();
-    getList(dbId, query, promise);
-    return promise.future();
-  }
-
-  /**
-   * 查询List结果
-   *
-   * @param dbId    数据源id
-   * @param query   SQL与参数
-   * @param handler 响应结果
-   */
-  public void getList(String dbId, SqlAndParams query, Handler<AsyncResult<List<JsonObject>>> handler) {
-    SQLExecute pool = jdbcExecute(dbId);
-    if (pool == null) {
-      handler.handle(Future.failedFuture("数据源不存在" + (dbId == null ? "" : "-->" + dbId)));
-      return;
-    }
-    pool.selectAsList(query, handler);
   }
 
 
@@ -179,7 +132,7 @@ public class JdbcBase {
   /**
    * 查询Object结果
    *
-   * @param dbId  数据源id
+   * @param dbId  指定数据源的id
    * @param query SQL与参数
    */
   public Future<JsonObject> getObject(String dbId, SqlAndParams query) {
@@ -191,7 +144,7 @@ public class JdbcBase {
   /**
    * 查询Object结果
    *
-   * @param dbId    数据源id
+   * @param dbId    指定数据源的id
    * @param query   SQL与参数
    * @param handler 响应结果
    */
@@ -202,6 +155,53 @@ public class JdbcBase {
       return;
     }
     pool.selectAsObject(query, handler);
+  }
+
+  /**
+   * 查询List结果
+   *
+   * @param query SQL与参数
+   */
+  public Future<List<JsonObject>> getList(SqlAndParams query) {
+    return getList(null, query);
+  }
+
+  /**
+   * 查询List结果
+   *
+   * @param query   SQL与参数
+   * @param handler 响应结果
+   */
+  public void getList(SqlAndParams query, Handler<AsyncResult<List<JsonObject>>> handler) {
+    getList(null, query, handler);
+  }
+
+  /**
+   * 查询List结果
+   *
+   * @param dbId  指定数据源的id
+   * @param query SQL与参数
+   */
+  public Future<List<JsonObject>> getList(String dbId, SqlAndParams query) {
+    Promise<List<JsonObject>> promise = Promise.promise();
+    getList(dbId, query, promise);
+    return promise.future();
+  }
+
+  /**
+   * 查询List结果
+   *
+   * @param dbId    指定数据源的id
+   * @param query   SQL与参数
+   * @param handler 响应结果
+   */
+  public void getList(String dbId, SqlAndParams query, Handler<AsyncResult<List<JsonObject>>> handler) {
+    SQLExecute pool = jdbcExecute(dbId);
+    if (pool == null) {
+      handler.handle(Future.failedFuture("数据源不存在" + (dbId == null ? "" : "-->" + dbId)));
+      return;
+    }
+    pool.selectAsList(query, handler);
   }
 
   /**
@@ -226,7 +226,7 @@ public class JdbcBase {
   /**
    * 执行操作
    *
-   * @param dbId  数据源id
+   * @param dbId  指定数据源的id
    * @param query SQL与参数
    */
   public Future<Integer> updateInt(String dbId, SqlAndParams query) {
@@ -272,7 +272,7 @@ public class JdbcBase {
   /**
    * 批量执行数据更新
    *
-   * @param dbId  数据库id
+   * @param dbId  指定数据源的id
    * @param query SQL与参数
    */
   public Future<Integer> batchInt(String dbId, SqlAndParams query) {
@@ -284,7 +284,7 @@ public class JdbcBase {
   /**
    * 批量执行数据更新
    *
-   * @param dbId    数据库id
+   * @param dbId    指定数据源的id
    * @param query   SQL与参数
    * @param handler 响应结果
    */
