@@ -10,7 +10,7 @@ ServerVerticle的实例数量,通常要参考CPU是多少核心,建议是CPU的2
 
 ## monitoringEnabled
 
-是否开启指标监控,如果true则开启并且可以访问 host:port/CoreConstants.MONITORING_ROUTE_PATH得到结果
+是否开启指标监控,如果true则开启并且可以访问 host:port/CoreConstants.MONITORING_ROUTE_PATH得到监控数据,返回为{http,sql,jvm}具体参考 [Vert.x 指标监控](https://vertx-china.github.io/docs/vertx-micrometer-metrics/java/#_vert_x_core_tools_metrics)
 
 ## log4j2Config
 

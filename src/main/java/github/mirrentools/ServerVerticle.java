@@ -112,11 +112,15 @@ public class ServerVerticle extends AbstractVerticle {
       vertx.eventBus().<JsonObject>request(CoreConstants.EVENT_BUS_METRICS, "",
         res -> {
           rct.response().putHeader(CoreConstants.CONTENT_TYPE, CoreConstants.CONTENT_JSON_UTF8);
-          if (res.succeeded()) {
-            JsonObject body = res.result().body() == null ? new JsonObject() : res.result().body();
-            rct.response().end(ResultUtil.getSuccess(body).toBuffer());
-          } else {
-            rct.response().end(ResultUtil.get(ResultState.ERROR, res.cause().toString()).toBuffer());
+          try {
+            if (res.succeeded()) {
+              JsonObject body = res.result().body() == null ? new JsonObject() : res.result().body();
+              rct.response().end(ResultUtil.getSuccess(body).toBuffer());
+            } else {
+              rct.response().end(ResultUtil.get(ResultState.ERROR, res.cause().toString()).toBuffer());
+            }
+          } catch (Exception e) {
+            rct.response().end(ResultUtil.get(ResultState.ERROR, e.toString()).toBuffer());
           }
         }
       )
