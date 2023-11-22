@@ -15,6 +15,7 @@ public class TemplateServiceImpl extends ServiceBase implements TemplateService 
   public final TemplateSQL templateSQL=new TemplateSQL();
   @Override
   public Future<JsonObject> find(MultiMap params) {
+    //如果是多数据源,可以在测试后面加上数据源的id
     return responseList("测试", templateSQL.queryAll());
   }
 

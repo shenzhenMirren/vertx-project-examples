@@ -127,6 +127,7 @@ public class MainVerticle extends AbstractVerticle {
     JsonArray dbs = config().getJsonArray("dataSource");
     for (int i = 0; i < dbs.size(); i++) {
       JsonObject db = dbs.getJsonObject(i);
+      String dbId = db.getString("id");
       MySQLConnectOptions connectOptions = new MySQLConnectOptions()
         .setHost(db.getString("host"))
         .setPort(db.getInteger("port"))
@@ -136,9 +137,10 @@ public class MainVerticle extends AbstractVerticle {
         .setPassword(AESUtil.decodeAES(db.getString("pwd")));
       PoolOptions poolOptions = new PoolOptions()
         .setMaxSize(db.getInteger("maxSize"))
+        .setName("dbId")
         .setShared(true);
       Pool pool = MySQLPool.pool(vertx, connectOptions, poolOptions);
-      result.put(db.getString("id"), pool);
+      result.put(dbId, pool);
     }
     return result;
   }

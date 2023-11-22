@@ -7,6 +7,8 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.Promise;
+import io.vertx.core.impl.logging.Logger;
+import io.vertx.core.impl.logging.LoggerFactory;
 import io.vertx.core.json.JsonObject;
 
 import java.util.List;
@@ -19,6 +21,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author <a href="https://github.com/shenzhenMirren">Mirren</a>
  */
 public class JdbcBase {
+  /**
+   * 日志工具
+   */
+  public final Logger LOG = LoggerFactory.getLogger(this.getClass());
   /**
    * 应用的上下文
    */
@@ -43,6 +49,9 @@ public class JdbcBase {
     if (jdbcExecute == null) {
       jdbcExecute = SQLExecute.create(content.jdbcPool());
     }
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("SQL Execute -> Pool --> 使用默认数据源");
+    }
     return jdbcExecute;
   }
 
@@ -57,7 +66,10 @@ public class JdbcBase {
     }
     SQLExecute pool = jdbcExecuteMap.get(id);
     if (pool == null) {
-      return jdbcExecuteMap.computeIfAbsent(id, key -> SQLExecute.create(content.jdbcPool(key)));
+      pool = jdbcExecuteMap.computeIfAbsent(id, key -> SQLExecute.create(content.jdbcPool(key)));
+    }
+    if (LOG.isDebugEnabled()) {
+      LOG.debug("SQL Execute -> Pool -> 使用指定数据源 --> " + id);
     }
     return pool;
   }
