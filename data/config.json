@@ -13,7 +13,7 @@
       "port": 3306,
       "database": "local",
       "user": "KEZIviXlyxwufa4pi1UM2w==",
-      "pwd": "VtGwHaI53LBffVuCM4GPMQ==",
+      "pwd": "KEZIviXlyxwufa4pi1UM2w==",
       "idleTimeout": 1200,
       "maxSize": 50
     },
@@ -23,7 +23,7 @@
       "port": 3306,
       "database": "local",
       "user": "KEZIviXlyxwufa4pi1UM2w==",
-      "pwd": "VtGwHaI53LBffVuCM4GPMQ==",
+      "pwd": "KEZIviXlyxwufa4pi1UM2w==",
       "idleTimeout": 1200,
       "maxSize": 50
     }
