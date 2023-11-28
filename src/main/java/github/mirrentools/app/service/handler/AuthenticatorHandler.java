@@ -1,6 +1,6 @@
-package github.mirrentools.app.service;
+package github.mirrentools.app.service.handler;
 
-import github.mirrentools.app.service.impl.AuthenticatorHandlerImpl;
+import github.mirrentools.app.service.handler.impl.AuthenticatorHandlerImpl;
 import io.vertx.ext.web.RoutingContext;
 
 import java.util.Set;

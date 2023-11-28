@@ -1,4 +1,4 @@
-package github.mirrentools.app.service.impl;
+package github.mirrentools.app.service.handler.impl;
 
 import github.mirrentools.core.CoreConstants;
 import github.mirrentools.core.SessionDataStore;
@@ -13,7 +13,7 @@ import io.vertx.core.http.HttpServerResponse;
 import io.vertx.core.json.JsonObject;
 import io.vertx.ext.web.RoutingContext;
 import io.vertx.sqlclient.Tuple;
-import github.mirrentools.app.service.AuthenticatorHandler;
+import github.mirrentools.app.service.handler.AuthenticatorHandler;
 
 import java.util.HashSet;
 import java.util.Objects;

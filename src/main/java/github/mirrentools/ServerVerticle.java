@@ -3,7 +3,7 @@ package github.mirrentools;
 import github.mirrentools.app.router.ClassesRouter;
 import github.mirrentools.app.router.StudentRouter;
 import github.mirrentools.app.router.TemplateRouter;
-import github.mirrentools.app.service.AuthenticatorHandler;
+import github.mirrentools.app.service.handler.AuthenticatorHandler;
 import github.mirrentools.core.CoreConstants;
 import github.mirrentools.core.enums.ResultState;
 import github.mirrentools.core.utils.ResultUtil;
