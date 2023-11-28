@@ -4,6 +4,8 @@ import io.vertx.core.Future;
 import io.vertx.core.json.JsonObject;
 import github.mirrentools.core.enums.ResultState;
 
+import java.util.List;
+
 /**
  * 返回响应结果结果为Future的工具
  *
@@ -65,6 +67,57 @@ public class FutureUtil {
   public static Future<JsonObject> resultNewArray(ResultState state) {
     return Future.succeededFuture(ResultUtil.getNewArray(state));
   }
+
+  /**
+   * 返回指定数据,状态码SUCCESS
+   */
+  public static Future<JsonObject> success(Integer data) {
+    return Future.succeededFuture(ResultUtil.getSuccess(data));
+  }
+
+  /**
+   * 返回指定数据,状态码SUCCESS
+   */
+  public static Future<JsonObject> success(Long data) {
+    return Future.succeededFuture(ResultUtil.getSuccess(data));
+  }
+
+  /**
+   * 返回指定数据,状态码SUCCESS
+   */
+  public static Future<JsonObject> success(Double data) {
+    return Future.succeededFuture(ResultUtil.getSuccess(data));
+  }
+
+  /**
+   * 返回指定数据,状态码SUCCESS
+   */
+  public static Future<JsonObject> success(String data) {
+    return Future.succeededFuture(ResultUtil.getSuccess(data));
+  }
+
+
+  /**
+   * 返回指定数据,状态码SUCCESS
+   */
+  public static Future<JsonObject> success(JsonObject data) {
+    return Future.succeededFuture(ResultUtil.getSuccess(data));
+  }
+
+  /**
+   * 返回指定数据,状态码SUCCESS
+   */
+  public static Future<JsonObject> success(List<JsonObject> data) {
+    return Future.succeededFuture(ResultUtil.getSuccess(data));
+  }
+
+  /**
+   * 返回指定数据,状态码SUCCESS
+   */
+  public static Future<JsonObject> success(Object data) {
+    return Future.succeededFuture(ResultUtil.getSuccess(data));
+  }
+
 
   /**
    * 返回结果为null,状态码SUCCESS
