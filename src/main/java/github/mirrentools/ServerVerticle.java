@@ -62,7 +62,9 @@ public class ServerVerticle extends AbstractVerticle {
   @Override
   public void start(Promise<Void> startPromise) {
     Router router = Router.router(vertx);
-    router.route().handler(CorsHandler.create());
+    CorsHandler corsHandler = CorsHandler.create();
+    corsHandler.allowedMethod(HttpMethod.OPTIONS);
+    router.route().handler(corsHandler);
     router.route().handler(BodyHandler.create().setBodyLimit(BODY_LIMIT));
     router.route().handler(FaviconHandler.create(vertx, "favicon.ico"));
 
