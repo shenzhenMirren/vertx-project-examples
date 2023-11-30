@@ -1,9 +1,12 @@
 package github.mirrentools.core.utils;
 
 import io.vertx.core.MultiMap;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
 
 /**
  * 获取MultiMap参数的工具
+ *
  * @author <a href="https://github.com/shenzhenMirren">Mirren</a> *
  */
 public class ParamsUtil {
@@ -131,4 +134,62 @@ public class ParamsUtil {
   public static Double getDouble(MultiMap params, String name, Double def) {
     return StringUtil.getDouble(params.get(name), def);
   }
+
+    /**
+   * 获取JsonObject对象,如果无效就返回null
+   *
+   * @param params 参数
+   * @param name   名称
+   */
+  public static JsonObject getJsonObject(MultiMap params, String name) {
+    try {
+      return new JsonObject(params.get(name).trim());
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  /**
+   * 获取JsonObject对象,如果指定的无效就返回默认值
+   *
+   * @param params 参数
+   * @param name   名称
+   * @param def    默认值
+   */
+  public static JsonObject getJsonObject(MultiMap params, String name, JsonObject def) {
+    try {
+      return new JsonObject(params.get(name).trim());
+    } catch (Exception e) {
+      return def;
+    }
+  }
+  /**
+   * 获取JsonArray对象,如果无效就返回null
+   *
+   * @param params 参数
+   * @param name   名称
+   */
+  public static JsonArray getJsonArray(MultiMap params, String name) {
+    try {
+      return new JsonArray(params.get(name).trim());
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  /**
+   * 获取JsonArray对象,如果指定的无效就返回默认值
+   *
+   * @param params 参数
+   * @param name   名称
+   * @param def    默认值
+   */
+  public static JsonArray getJsonArray(MultiMap params, String name, JsonArray def) {
+    try {
+      return new JsonArray(params.get(name).trim());
+    } catch (Exception e) {
+      return def;
+    }
+  }
+
 }

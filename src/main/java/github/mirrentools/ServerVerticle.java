@@ -1,6 +1,7 @@
 package github.mirrentools;
 
 import github.mirrentools.app.router.ClassesRouter;
+import github.mirrentools.app.router.StudentBatchRouter;
 import github.mirrentools.app.router.StudentRouter;
 import github.mirrentools.app.router.TemplateRouter;
 import github.mirrentools.app.service.handler.AuthenticatorHandler;
@@ -11,6 +12,7 @@ import github.mirrentools.core.utils.RouterUtil;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.Future;
 import io.vertx.core.Promise;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServer;
 import io.vertx.core.http.HttpServerOptions;
 import io.vertx.core.json.JsonObject;
@@ -56,6 +58,7 @@ public class ServerVerticle extends AbstractVerticle {
   private void initPrivateRouter(Router router) {
     StudentRouter.startRouter(router);
     ClassesRouter.startRouter(router);
+    StudentBatchRouter.startRouter(router);
   }
 
 

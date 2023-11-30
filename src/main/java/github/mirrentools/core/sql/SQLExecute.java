@@ -167,4 +167,24 @@ public interface SQLExecute {
    * @param handler 返回结果
    */
   void batch(SqlAndParams query, Handler<AsyncResult<Integer>> handler);
+  /**
+   * 批量操作
+   *
+   * @param query    SQL语句与批量参数
+   * @param property 自增结果GENERATED_KEYS方法:property传入Pool.GENERATED_KEYS得到结果后判断row!=null就执行row.get对应类型数据
+   */
+  default <R> Future<List<R>> batch(SqlAndParams query, PropertyKind<R> property) {
+    Promise<List<R>> promise = Promise.promise();
+    batch(query, property, promise);
+    return promise.future();
+  }
+
+  /**
+   * 批量操作
+   *
+   * @param query    SQL语句与批量参数
+   * @param property 自增结果GENERATED_KEYS方法:property传入Pool.GENERATED_KEYS得到结果后判断row!=null就执行row.get对应类型数据
+   * @param handler  返回结果,得到批量操作结果对应<R>类型
+   */
+  <R> void batch(SqlAndParams query, PropertyKind<R> property, Handler<AsyncResult<List<R>>> handler);
 }

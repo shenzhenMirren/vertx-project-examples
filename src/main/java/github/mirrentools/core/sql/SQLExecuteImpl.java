@@ -143,9 +143,9 @@ public class SQLExecuteImpl implements SQLExecute {
         LOG.debug("SQL Execute Batch:");
         LOG.debug(query);
       }
-      pool.preparedQuery(query.getSql()).executeBatch(query.getBatchParams(), res -> {
-        if (res.succeeded()) {
-          RowSet<Row> rowSet = res.result();
+      pool.preparedQuery(query.getSql())
+        .executeBatch(query.getBatchParams())
+        .onSuccess(rowSet -> {
           if (rowSet == null) {
             handler.handle(Future.succeededFuture(0));
           } else {
@@ -157,12 +157,41 @@ public class SQLExecuteImpl implements SQLExecute {
             }
             handler.handle(Future.succeededFuture(count));
           }
-        } else {
-          handler.handle(Future.failedFuture(res.cause()));
-        }
-      });
+        })
+        .onFailure(err -> handler.handle(Future.failedFuture(err)));
     } else {
       handler.handle(Future.failedFuture(query.getSql()));
     }
   }
+
+  public <R> void batch(SqlAndParams query, PropertyKind<R> property, Handler<AsyncResult<List<R>>> handler) {
+    if (query.succeeded()) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug("SQL Execute Batch:");
+        LOG.debug(query);
+      }
+      pool
+        .preparedQuery(query.getSql())
+        .executeBatch(query.getBatchParams())
+        .onSuccess(rowSet -> {
+          if (rowSet == null) {
+            handler.handle(Future.succeededFuture(null));
+          } else {
+            List<R> result = new ArrayList<>();
+            result.add(rowSet.property(property));
+            RowSet<Row> next = rowSet.next();
+            while (next != null) {
+              result.add(next.property(property));
+              next = next.next();
+            }
+            handler.handle(Future.succeededFuture(result));
+          }
+        })
+        .onFailure(err -> handler.handle(Future.failedFuture(err)));
+    } else {
+      handler.handle(Future.failedFuture(query.getSql()));
+    }
+  }
+
+
 }
