@@ -11,9 +11,12 @@ import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.micrometer.MicrometerMetricsOptions;
 
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Objects;
 
 /**
  * 程序启动器
@@ -78,11 +81,20 @@ public class MainLauncher extends Launcher {
     if (config != null) {
       return config;
     }
-    String root = System.getProperty("user.dir");
-    Path path = Paths.get(root, "data", "config.json");
-    System.out.println("Loaded config.json with path: " + path);
-    byte[] bs = Files.readAllBytes(path);
-    config = new JsonObject(new String(bs));
+    byte[] bytes = null;
+    try {
+      String root = System.getProperty("user.dir");
+      Path path = Paths.get(root, "data", "config.json");
+      bytes = Files.readAllBytes(path);
+      System.out.println("Loaded config.json with path: " + path);
+    } catch (Exception ignored) {
+      String root = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath();
+      root = URLDecoder.decode(root.replace("/target/classes", ""), StandardCharsets.UTF_8);
+      Path path = Paths.get(root, "data", "config.json");
+      bytes = Files.readAllBytes(path);
+      System.out.println("Loaded config.json with path: " + path);
+    }
+    config = new JsonObject(new String(bytes));
     return config;
   }
 }
