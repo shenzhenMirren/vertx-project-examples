@@ -1,6 +1,9 @@
 package github.mirrentools;
 
-import github.mirrentools.core.*;
+import github.mirrentools.core.AppContext;
+import github.mirrentools.core.CoreConstants;
+import github.mirrentools.core.LocalDataStore;
+import github.mirrentools.core.SessionDataStore;
 import github.mirrentools.core.utils.AESUtil;
 import io.vertx.core.AbstractVerticle;
 import io.vertx.core.DeploymentOptions;
@@ -41,12 +44,15 @@ public class MainVerticle extends AbstractVerticle {
       //初始化全局配置上下文
       new AppContext.Builder()
         .withVertx(vertx)
-        .withConfig(getAppConfig())
         .withJdbcPool(getJdbcPool())
         .withLocalStore(LocalDataStore.instance())
         .withSessionStore(SessionDataStore.instance(vertx))
         .withWebClient(webClient)
         .build();
+
+      //初始化app配置
+      JsonObject config = config().getJsonObject("app");
+      AppConfig.init(config);
 
       //初始化指标监控
       initMicrometerMetricsService();
@@ -109,15 +115,7 @@ public class MainVerticle extends AbstractVerticle {
     return vertx.deployVerticle(new ScheduleVerticle());
   }
 
-  /**
-   * 获取全局的配置信息
-   */
-  private AppConfig getAppConfig() {
-    JsonObject config = config().getJsonObject("app");
-    Boolean testMode = config.getBoolean("testMode");
-    //有更多配置的就在这里获取后添加record的最后面
-    return new AppConfig(testMode);
-  }
+
 
   /**
    * 初始化并获取数据库连接池

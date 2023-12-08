@@ -11,6 +11,7 @@ import io.vertx.core.VertxOptions;
 import io.vertx.core.json.JsonObject;
 import io.vertx.micrometer.MicrometerMetricsOptions;
 
+import java.io.File;
 import java.net.URLDecoder;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -27,10 +28,8 @@ public class MainLauncher extends Launcher {
 
   public static void main(String[] args) {
     try {
-      JsonObject config = getConfig();
-      String logConfig = System.getProperty("user.dir") + config.getString("log4j2Config");
-      System.out.println("Loaded log4j2.xml with path:" + logConfig);
-      System.setProperty("LOG4J_CONFIGURATION_FILE", logConfig);
+      getConfig();
+      System.setProperty("LOG4J_CONFIGURATION_FILE", LOG4J2_CONFIG);
       InternalLoggerFactory.setDefaultFactory(Log4J2LoggerFactory.INSTANCE);
       System.setProperty("vertx.logger-delegate-factory-class-name", "io.vertx.core.logging.Log4j2LogDelegateFactory");
       System.setProperty("vertx.disableDnsResolver", "true");
@@ -72,29 +71,39 @@ public class MainLauncher extends Launcher {
     }
   }
 
-  private static JsonObject config;
+  /**
+   * App的配置信息
+   */
+  private static JsonObject CONFIG;
+  /**
+   * 日志的所在路径,只用前需要确保已经执行过getConfig()
+   */
+  private static String LOG4J2_CONFIG;
 
   /**
    * 读取配置文件
    */
   private static JsonObject getConfig() throws Exception {
-    if (config != null) {
-      return config;
+    if (CONFIG != null) {
+      return CONFIG;
     }
-    byte[] bytes = null;
     try {
       String root = System.getProperty("user.dir");
       Path path = Paths.get(root, "data", "config.json");
-      bytes = Files.readAllBytes(path);
+      CONFIG = new JsonObject(new String(Files.readAllBytes(path)));
+      LOG4J2_CONFIG = System.getProperty("user.dir") + CONFIG.getString("log4j2Config");
       System.out.println("Loaded config.json with path: " + path);
+      System.out.println("Loaded log4j2.xml with path: " + LOG4J2_CONFIG);
     } catch (Exception ignored) {
       String root = Objects.requireNonNull(Thread.currentThread().getContextClassLoader().getResource("")).getPath();
       root = URLDecoder.decode(root.replace("/target/classes", ""), StandardCharsets.UTF_8);
+      root = new File(root).getPath();
       Path path = Paths.get(root, "data", "config.json");
-      bytes = Files.readAllBytes(path);
+      CONFIG = new JsonObject(new String(Files.readAllBytes(path)));
+      LOG4J2_CONFIG = root + CONFIG.getString("log4j2Config");
       System.out.println("Loaded config.json with path: " + path);
+      System.out.println("Loaded log4j2.xml with path: " + LOG4J2_CONFIG);
     }
-    config = new JsonObject(new String(bytes));
-    return config;
+    return CONFIG;
   }
 }

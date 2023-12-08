@@ -28,6 +28,5 @@ http客户端的配置信息,具体参考 WebClientOptions类
 
 全局会使用到的配置信息,这个配置信息要在全局可以使用需要做下面的步骤:
 
-1. 在 AppConfig Record类的最后添加这个参数,
-2. 在 MainVerticle getConfig读取解析并添加这个参数
-3. 使用时直接调用AppConfig.xxx
+在 AppConfig 类里面定义属性并添加设置私有set方法跟公开获取方法,并在init里面获取配置信息进行初始化
+* testMode: 当前是否为测试模式,true=测试模式

@@ -31,10 +31,6 @@ public class AppContext {
    */
   private WebClient webClient;
 
-  /**
-   * 配置文件
-   */
-  private AppConfig config;
 
   /**
    * 数据库链接池
@@ -71,13 +67,6 @@ public class AppContext {
    */
   public WebClient webClient() {
     return webClient;
-  }
-
-  /**
-   * 获取配置信息
-   */
-  public AppConfig config() {
-    return config;
   }
 
 
@@ -143,7 +132,6 @@ public class AppContext {
   public static class Builder {
     private Vertx vertx;
     private WebClient webClient;
-    private AppConfig config;
     private Map<String, Pool> jdbcPool;
     private SessionDataStore sessionStore;
     private LocalDataStore localStore;
@@ -159,11 +147,6 @@ public class AppContext {
 
     public Builder withWebClient(WebClient webClient) {
       this.webClient = webClient;
-      return this;
-    }
-
-    public Builder withConfig(AppConfig config) {
-      this.config = config;
       return this;
     }
 
@@ -187,7 +170,6 @@ public class AppContext {
       AppContext appContent = new AppContext();
       appContent.vertx = this.vertx;
       appContent.webClient = this.webClient;
-      appContent.config = this.config;
       appContent.jdbcPool = this.jdbcPool;
       appContent.sessionStore = this.sessionStore;
       appContent.localStore = this.localStore;

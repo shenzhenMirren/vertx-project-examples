@@ -192,4 +192,54 @@ public class ParamsUtil {
     }
   }
 
+  /**
+   * 获取JsonObject对象
+   *
+   * @param params 参数
+   * @param name   名称
+   */
+  public static JsonObject getObject(MultiMap params, String name) {
+    return getObject(params, name, null);
+  }
+
+  /**
+   * 获取JsonObject对象
+   *
+   * @param params 参数
+   * @param name   名称
+   * @param def    默认值
+   */
+  public static JsonObject getObject(MultiMap params, String name, JsonObject def) {
+    JsonObject result = StringUtil.getJsonObject(params.get(name));
+    if (result == null) {
+      return def;
+    }
+    return result;
+  }
+
+  /**
+   * 获取JsonArray对象
+   *
+   * @param params 参数
+   * @param name   名称
+   */
+  public static JsonArray getArray(MultiMap params, String name) {
+    return getArray(params, name, null);
+  }
+
+  /**
+   * 获取JsonArray对象
+   *
+   * @param params 参数
+   * @param name   名称
+   * @param def    默认值
+   */
+  public static JsonArray getArray(MultiMap params, String name, JsonArray def) {
+    JsonArray result = StringUtil.getJsonArray(params.get(name));
+    if (result == null) {
+      return def;
+    }
+    return result;
+  }
+
 }
