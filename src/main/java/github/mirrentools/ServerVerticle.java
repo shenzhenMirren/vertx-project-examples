@@ -110,7 +110,7 @@ public class ServerVerticle extends AbstractVerticle {
    * @param router 路由器
    */
   private void initMicrometerMetrics(Router router) {
-    if (CoreConstants.MONITORING_ENABLED) {
+    if (!CoreConstants.MONITORING_ENABLED) {
       return;
     }
     router.route(CoreConstants.MONITORING_ROUTE_PATH).blockingHandler(rct ->

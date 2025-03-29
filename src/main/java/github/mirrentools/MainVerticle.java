@@ -82,7 +82,7 @@ public class MainVerticle extends AbstractVerticle {
    * 初始化监控快照
    */
   private void initMicrometerMetricsService() {
-    if (CoreConstants.MONITORING_ENABLED) {
+    if (!CoreConstants.MONITORING_ENABLED) {
       return;
     }
     MetricsService metricsService = MetricsService.create(vertx);
